@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Tile.qml</file>
+        <file>GameBoard.qml</file>
+        <file>StartFrame.qml</file>
+        <file>Result.qml</file>
+        <file>Cell.qml</file>
+        <file>GameSettings.qml</file>
+    </qresource>
+</RCC>
