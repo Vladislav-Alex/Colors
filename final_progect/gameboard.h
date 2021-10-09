@@ -108,7 +108,17 @@ private:
     bool isFirstEntering = true;
 
     std::vector<Recorder> vectorToReverse;
+
+    /**
+     * @brief Called when the field and color of the same color are
+     * initialized to the player's square
+     */
     void addingAreasToPlayerTerritories(size_t row, size_t column, WhoseMove move);
+
+    /**
+     * @brief Checks if the one who walks has a possible move
+     */
+    void endOfTheGame();
 
 signals:
     void gameEndSignal();

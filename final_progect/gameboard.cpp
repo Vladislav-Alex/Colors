@@ -171,10 +171,40 @@ void GameBoard::takeAll(const QModelIndex &index, bool isFirstEntering)
 }
 
 
+void GameBoard::endOfTheGame()
+{
+    for (int row = 0; row < m_nRows; ++row)
+    {
+        for (int column = 0; column < m_nColumns; ++column)
+        {
+            if (m_pDataClass->data()[row][column].owner == Owner::IS_FREE)
+            {
+                if ((row - 1) >= 0 && m_pDataClass->data()[row - 1][column].owner == static_cast<Owner>(m_state))
+                {
+                    return;
+                }
+                if ((row + 1) < m_nRows && m_pDataClass->data()[row + 1][column].owner == static_cast<Owner>(m_state))
+                {
+                    return;
+                }
+                if ((column - 1) >= 0 && m_pDataClass->data()[row][column - 1].owner == static_cast<Owner>(m_state))
+                {
+                    return;
+                }
+                if ((column + 1) < m_nColumns && m_pDataClass->data()[row][column + 1].owner == static_cast<Owner>(m_state))
+                {
+                    return;
+                }
+            }
+            else
+                continue;
+        }
+    }
+    emit gameEndSignal();
+}
+
 void GameBoard::commit(int row, int column)
 {
-    timer tp;
-    tp.start();
     vectorToReverse.clear();
     if (!dataReadyForWork())
         return;
@@ -207,42 +237,8 @@ void GameBoard::commit(int row, int column)
         emit playerChanged();
         break;
     }
-    tp.stop();
-    qDebug() << "Finished commiting arrays in " << tp.ms() << "ms";
-//    for (auto item : m_pDataClass->data().keys())
-//    {
-//        if (m_pDataClass->data()[item].owner == Owner::IS_FREE)
-//        {
-//            QModelIndex temp1 = index(item.row() - 1, item.column());
-//            if (temp1.isValid() && m_pDataClass->data()[temp1].owner == m_state)
-//            {
-//                qDebug() << "+";
-//                return;
-//            }
-//            QModelIndex temp2 = index(item.row() + 1, item.column());
-//            if (temp2.isValid() && m_pDataClass->data()[temp2].owner == m_state)
-//            {
-//                qDebug() << "+";
-//                return;
-//            }
-//            QModelIndex temp3 = index(item.row(), item.column() - 1);
-//            if (temp3.isValid() && m_pDataClass->data()[temp3].owner == m_state)
-//            {
-//                qDebug() << "+";
-//                return;
-//            }
-//            QModelIndex temp4 = index(item.row(), item.column() + 1);
-//            if (temp4.isValid() && m_pDataClass->data()[temp4.row()][temp4.column()].owner == m_state)
-//            {
-//                qDebug() << "+";
-//                return;
-//            }
-//        }
-//        else
-//            continue;
-//    }
-//    qDebug() << "over";
-//    emit gameEndSignal();
+
+    endOfTheGame();
 }
 
 void GameBoard::addingAreasToPlayerTerritories(size_t row, size_t column, WhoseMove move)
