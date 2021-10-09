@@ -5,18 +5,16 @@
 
 #include "music.h"
 
-GameBoard::GameBoard(int nRows, int nColumns, QObject* pobj)
-    : QAbstractTableModel(pobj), m_nRows(nRows) , m_nColumns(nColumns),
-      m_state(FIRST_PLAYER), color(QColor(Qt::green)), m_firstPlayerAccount(0), m_secondPlayerAccount(0)
+GameBoard::GameBoard(QObject* pobj)
+    : QAbstractTableModel(pobj), m_state(FIRST_PLAYER),
+      m_firstPlayerAccount(0), m_secondPlayerAccount(0)
 {
     m_playersAccount = { m_firstPlayerAccount, m_secondPlayerAccount };
-
     m_pRecorder = new MoveRecorder();
 }
 
 GameBoard::~GameBoard()
 {
-//    dataClass->hash().clear();
     delete m_pRecorder;
     delete m_pDataClass;
 }
@@ -43,7 +41,7 @@ bool GameBoard::setData(const QModelIndex& index, const QVariant& value, int nRo
     if (!dataReadyForWork())
         return false;
     if (nRole == Qt::EditRole) {
-        QColor temp = m_pDataClass->data()[index.row()][index.column()].color;
+//        QColor temp = m_pDataClass->data()[index.row()][index.column()].color;
         m_pDataClass->m_data[index.row()][index.column()].color = color;
         ++m_playersAccount.at(m_state);
 
@@ -59,7 +57,7 @@ bool GameBoard::setData(const QModelIndex& index, const QVariant& value, int nRo
             m_pDataClass->m_data[index.row()][index.column()].owner = Owner::SECOND_PLAYER;
             break;
         }
-        emit animation(temp, m_pDataClass->data()[index.row()][index.column()].color);
+//        emit animation(temp, m_pDataClass->data()[index.row()][index.column()].color);
         emit dataChanged(index, index);
         return true;
     }
@@ -122,16 +120,6 @@ Qt::ItemFlags GameBoard::flags(const QModelIndex& index) const
 {
     Qt::ItemFlags flags = QAbstractTableModel::flags(index);
     return index.isValid() ? (flags | Qt::ItemIsEditable) : flags;
-}
-
-int GameBoard::nColumns() const
-{
-    return m_nColumns;
-}
-
-int GameBoard::nRows() const
-{
-    return m_nRows;
 }
 
 bool GameBoard::helper(int x, int y) // the method for check that one of four adjacent cells belongs to the player
@@ -254,53 +242,46 @@ void GameBoard::commit(int row, int column)
 //            continue;
 //    }
 //    qDebug() << "over";
-//    emit someSignal();
+//    emit gameEndSignal();
 }
 
-void GameBoard::test(int size, QColor colorPlayer1, QColor colorPlayer2, int numberOfColors)
+void GameBoard::addingAreasToPlayerTerritories(size_t row, size_t column, WhoseMove move)
 {
-    timer tp;
-    tp.start();
-    qDebug() << "color" << color;
-    m_playersColors.push_back(colorPlayer1);
-    m_playersColors.push_back(colorPlayer2);
-    color = m_playersColors.at(0);
+    takeAll(index(row, column), true);
+    if (pretendent.count() > 0)
+        changeFieldOwner();
+    pretendent.clear();
+    vectorToReverse.clear();
+    m_state = move;
+    color = m_playersColors.at(m_state);
+}
+
+void GameBoard::boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2, int numberOfColors)
+{
     m_pDataClass = new Data();
 
     beginInsertRows(QModelIndex(), 0, size - 1);
         m_nRows = size;
     endInsertRows();
-
     beginInsertColumns(QModelIndex(), 0, size - 1);
         m_nColumns = size;
     endInsertColumns();
+
     m_pDataClass->loadData(size, size, colorPlayer1, colorPlayer2, numberOfColors);
+
+    m_playersColors.clear();
+
+    m_playersColors.push_back(colorPlayer1);
+    m_playersColors.push_back(colorPlayer2);
+    color = m_playersColors.at(0);
+    m_state = WhoseMove::FIRST_PLAYER;
+
     emit dataReady();
 
-    takeAll(index(0, 0), true);
-    if (pretendent.count() > 0)
-        changeFieldOwner();
-    pretendent.clear();
-    vectorToReverse.clear();
-    m_state = WhoseMove::SECOND_PLAYER;
-    color = m_playersColors.at(WhoseMove::SECOND_PLAYER);
-    takeAll(index(size - 1, size - 1), true);
-    if (pretendent.count() > 0)
-        changeFieldOwner();
-    pretendent.clear();
-    vectorToReverse.clear();
-    m_state = WhoseMove::FIRST_PLAYER;
-    color = m_playersColors.at(WhoseMove::FIRST_PLAYER);
+    addingAreasToPlayerTerritories(0, 0, WhoseMove::SECOND_PLAYER);
+    addingAreasToPlayerTerritories(size - 1, size - 1, WhoseMove::FIRST_PLAYER);
+
     isFirstEntering = false;
-
-    tp.stop();
-    qDebug() << "Finished creating arrays in " << tp.ms() << "ms";
-//    emit dataChanged(index(0, 0), index(size - 1, size - 1));
-}
-
-bool GameBoard::dataReadyForWork() const
-{
-    return m_pDataClass;
 }
 
 void GameBoard::changeFieldOwner()
@@ -313,9 +294,9 @@ void GameBoard::changeFieldOwner()
     qDebug() << "vectorToReverse.size()" << vectorToReverse.size();
 }
 
-int GameBoard::secondPlayerAccount() const
+bool GameBoard::dataReadyForWork() const
 {
-    return m_secondPlayerAccount;
+    return m_pDataClass;
 }
 
 int GameBoard::state() const
@@ -328,6 +309,11 @@ int GameBoard::firstPlayerAccount() const
     return m_firstPlayerAccount;
 }
 
+int GameBoard::secondPlayerAccount() const
+{
+    return m_secondPlayerAccount;
+}
+
 int GameBoard::rowCount(const QModelIndex&) const
 {
     if (dataReadyForWork())
@@ -336,7 +322,7 @@ int GameBoard::rowCount(const QModelIndex&) const
         return defaultPuzzleDimension;
 
 }
-// -----------------------------------------------------------------
+
 int GameBoard::columnCount(const QModelIndex&) const
 {
     if (dataReadyForWork())

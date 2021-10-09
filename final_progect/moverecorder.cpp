@@ -1,10 +1,5 @@
 #include "moverecorder.h"
 
-MoveRecorder::MoveRecorder()
-{
-
-}
-
 void MoveRecorder::push(const std::vector<Recorder> &rec)
 {
     m_moveRecorder.push(rec);
@@ -19,12 +14,6 @@ const std::vector<Recorder> &MoveRecorder::pop()
         return temp;
     }
 }
-
-//int &MoveRecorder::top()
-//{
-////    if (!m_moveRecorder.empty())
-//    //        return m_moveRecorder.top().count;
-//}
 
 int MoveRecorder::size()
 {

@@ -20,10 +20,8 @@ struct Recorder
 class MoveRecorder
 {
 public:
-    MoveRecorder();
     void push(const std::vector<Recorder> &rec);
     const std::vector<Recorder> &pop();
-//    int &top();
     int size();
 
 private:

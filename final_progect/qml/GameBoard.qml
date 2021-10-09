@@ -26,7 +26,7 @@ Item
         anchors.topMargin: 30
         model: GameBoardModel
         {
-            onSomeSignal:
+            onGameEndSignal:
             {
                 if (view.firstPlayerAccount > view.secondPlayerAccount)
                     winningScore = _item.fPlayerColor;
@@ -118,6 +118,6 @@ console.log(view.firstPlayerAccount);
     onDialogClose:
     {
         visible = true;
-        view.model.test(boardSize, fPlayerColor, sPlayerColor, numberOfColors);
+        view.model.boardCreation(boardSize, fPlayerColor, sPlayerColor, numberOfColors);
     }
 }
