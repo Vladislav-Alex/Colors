@@ -17,7 +17,8 @@ GameBoard::GameBoard(int nRows, int nColumns, QObject* pobj)
 GameBoard::~GameBoard()
 {
 //    dataClass->hash().clear();
-    delete m;
+    delete m_pRecorder;
+    delete m_pDataClass;
 }
 
 QVariant GameBoard::data(const QModelIndex& index, int nRole) const
@@ -29,10 +30,10 @@ QVariant GameBoard::data(const QModelIndex& index, int nRole) const
     case Qt::DisplayRole:
     case Qt::EditRole:
     case MyRoles::COLOR_ROLE:
-        return m_pDataClass->hash().value(index).color;
+        return m_pDataClass->data()[index.row()][index.column()].color;
 
     case MyRoles::OWNER_ROLE:
-        return m_pDataClass->hash().value(index).owner;
+        return m_pDataClass->data()[index.row()][index.column()].owner;
     }
     return QVariant();
 }
@@ -42,8 +43,8 @@ bool GameBoard::setData(const QModelIndex& index, const QVariant& value, int nRo
     if (!dataReadyForWork())
         return false;
     if (nRole == Qt::EditRole) {
-        QColor temp = m_pDataClass->hash()[index].color;
-        m_pDataClass->m_hash[index].color = color;
+        QColor temp = m_pDataClass->data()[index.row()][index.column()].color;
+        m_pDataClass->m_data[index.row()][index.column()].color = color;
         ++m_playersAccount.at(m_state);
 
         m_firstPlayerAccount = m_playersAccount.at(0);
@@ -52,19 +53,19 @@ bool GameBoard::setData(const QModelIndex& index, const QVariant& value, int nRo
 
         switch (value.toInt()) {
         case WhoseMove::FIRST_PLAYER:
-            m_pDataClass->m_hash[index].owner = Owner::FIRST_PLAYER;
+            m_pDataClass->m_data[index.row()][index.column()].owner = Owner::FIRST_PLAYER;
             break;
         case WhoseMove::SECOND_PLAYER:
-            m_pDataClass->m_hash[index].owner = Owner::SECOND_PLAYER;
+            m_pDataClass->m_data[index.row()][index.column()].owner = Owner::SECOND_PLAYER;
             break;
         }
-        emit animation(temp, m_pDataClass->hash()[index].color);
+        emit animation(temp, m_pDataClass->data()[index.row()][index.column()].color);
         emit dataChanged(index, index);
         return true;
     }
     else if (nRole == MyRoles::COLOR_ROLE)
     {
-        m_pDataClass->m_hash[index] = { value.value<QColor>(), Owner::IS_FREE};
+        m_pDataClass->m_data[index.row()][index.column()] = { value.value<QColor>(), Owner::IS_FREE};
         emit dataChanged(index, index);
 
         return true;
@@ -104,15 +105,10 @@ void GameBoard::stepDown()
             setData(tempIndex, item.field.color, MyRoles::COLOR_ROLE);
             --m_playersAccount.at(m_state);
         }
-
-//        ++m_playersAccount.at(m_state);
         m_firstPlayerAccount = m_playersAccount.at(0);
         m_secondPlayerAccount = m_playersAccount.at(1);
         emit accountChanged();
     }
-//
-//    for (auto item : pretendent)
-//
 }
 
 QHash <int,QByteArray> GameBoard::roleNames() const
@@ -143,12 +139,12 @@ bool GameBoard::helper(int x, int y) // the method for check that one of four ad
     for (int i = -1; i <= 1; i += 2)
     {
         QModelIndex tempIndex = index(x, y + i);
-        if (tempIndex.isValid() && m_pDataClass->hash()[tempIndex].owner
+        if (tempIndex.isValid() && m_pDataClass->data()[tempIndex.row()][tempIndex.column()].owner
                                    == static_cast<Owner>(m_state))
             return true;
 
         tempIndex = index(x + i, y);
-        if (tempIndex.isValid() && m_pDataClass->hash()[tempIndex].owner
+        if (tempIndex.isValid() && m_pDataClass->data()[tempIndex.row()][tempIndex.column()].owner
                                    == static_cast<Owner>(m_state))
             return true;
     }
@@ -161,12 +157,12 @@ QList<QModelIndex> GameBoard::forCheck(int x, int y)
     for (int i = -1; i <= 1; i += 2)
     {
         QModelIndex tempIndex = index(x, y + i);
-        if (tempIndex.isValid() && (m_pDataClass->hash()[tempIndex].owner
+        if (tempIndex.isValid() && (m_pDataClass->data()[tempIndex.row()][tempIndex.column()].owner
                                      == Owner::IS_FREE || isFirstEntering))
             temp.append(tempIndex);
 
         tempIndex = index(x + i, y);
-        if (tempIndex.isValid() && (m_pDataClass->hash()[tempIndex].owner
+        if (tempIndex.isValid() && (m_pDataClass->data()[tempIndex.row()][tempIndex.column()].owner
                                     == Owner::IS_FREE || isFirstEntering))
             temp.append(tempIndex);
     }
@@ -177,7 +173,7 @@ void GameBoard::takeAll(const QModelIndex &index, bool isFirstEntering)
 {
     int find = pretendent.indexOf(index);
 
-    if (find == -1 && m_pDataClass->hash()[index].color == m_playersColors.at(m_state))
+    if (find == -1 && m_pDataClass->data()[index.row()][index.column()].color == m_playersColors.at(m_state))
     {
         if (!isFirstEntering)
             pretendent.append(index);
@@ -189,23 +185,23 @@ void GameBoard::takeAll(const QModelIndex &index, bool isFirstEntering)
 
 void GameBoard::commit(int row, int column)
 {
+    timer tp;
+    tp.start();
     vectorToReverse.clear();
     if (!dataReadyForWork())
         return;
     QModelIndex tempIndex = index(row, column);
 
-    if (!tempIndex.isValid() || m_pDataClass->hash()[tempIndex].owner != Owner::IS_FREE || !helper(row, column))
+    if (!tempIndex.isValid() || m_pDataClass->data()[tempIndex.row()][tempIndex.column()].owner != Owner::IS_FREE || !helper(row, column))
         return;
 
     pretendent.clear();
-    Recorder rec = {{tempIndex.row(), tempIndex.column()}, m_pDataClass->m_hash[tempIndex]};
-//    vectorToReverse.append({{tempIndex.row(), tempIndex.column()}, m_pDataClass->m_hash[tempIndex]});
+    Recorder rec = {{tempIndex.row(), tempIndex.column()}, m_pDataClass->m_data[tempIndex.row()][tempIndex.column()]};
 
     setData(tempIndex, m_state, Qt::EditRole);
     takeAll(tempIndex, true);
     if (pretendent.count() > 0)
     {
-//        --m_playersAccount.at(m_state);
         changeFieldOwner();
     }
     vectorToReverse.push_back(rec);
@@ -223,50 +219,53 @@ void GameBoard::commit(int row, int column)
         emit playerChanged();
         break;
     }
-
-    for (auto item : m_pDataClass->hash().keys())
-    {
-        if (m_pDataClass->hash()[item].owner == Owner::IS_FREE)
-        {
-            QModelIndex temp1 = index(item.row() - 1, item.column());
-            if (temp1.isValid() && m_pDataClass->hash()[temp1].owner == m_state)
-            {
-                qDebug() << "+";
-                return;
-            }
-            QModelIndex temp2 = index(item.row() + 1, item.column());
-            if (temp2.isValid() && m_pDataClass->hash()[temp2].owner == m_state)
-            {
-                qDebug() << "+";
-                return;
-            }
-            QModelIndex temp3 = index(item.row(), item.column() - 1);
-            if (temp3.isValid() && m_pDataClass->hash()[temp3].owner == m_state)
-            {
-                qDebug() << "+";
-                return;
-            }
-            QModelIndex temp4 = index(item.row(), item.column() + 1);
-            if (temp4.isValid() && m_pDataClass->hash()[temp4].owner == m_state)
-            {
-                qDebug() << "+";
-                return;
-            }
-        }
-        else
-            continue;
-    }
-    qDebug() << "over";
-    emit someSignal();
+    tp.stop();
+    qDebug() << "Finished commiting arrays in " << tp.ms() << "ms";
+//    for (auto item : m_pDataClass->data().keys())
+//    {
+//        if (m_pDataClass->data()[item].owner == Owner::IS_FREE)
+//        {
+//            QModelIndex temp1 = index(item.row() - 1, item.column());
+//            if (temp1.isValid() && m_pDataClass->data()[temp1].owner == m_state)
+//            {
+//                qDebug() << "+";
+//                return;
+//            }
+//            QModelIndex temp2 = index(item.row() + 1, item.column());
+//            if (temp2.isValid() && m_pDataClass->data()[temp2].owner == m_state)
+//            {
+//                qDebug() << "+";
+//                return;
+//            }
+//            QModelIndex temp3 = index(item.row(), item.column() - 1);
+//            if (temp3.isValid() && m_pDataClass->data()[temp3].owner == m_state)
+//            {
+//                qDebug() << "+";
+//                return;
+//            }
+//            QModelIndex temp4 = index(item.row(), item.column() + 1);
+//            if (temp4.isValid() && m_pDataClass->data()[temp4.row()][temp4.column()].owner == m_state)
+//            {
+//                qDebug() << "+";
+//                return;
+//            }
+//        }
+//        else
+//            continue;
+//    }
+//    qDebug() << "over";
+//    emit someSignal();
 }
 
 void GameBoard::test(int size, QColor colorPlayer1, QColor colorPlayer2, int numberOfColors)
 {
+    timer tp;
+    tp.start();
     qDebug() << "color" << color;
     m_playersColors.push_back(colorPlayer1);
     m_playersColors.push_back(colorPlayer2);
     color = m_playersColors.at(0);
-    m_pDataClass = new Data(*this, size, size);
+    m_pDataClass = new Data();
 
     beginInsertRows(QModelIndex(), 0, size - 1);
         m_nRows = size;
@@ -275,11 +274,9 @@ void GameBoard::test(int size, QColor colorPlayer1, QColor colorPlayer2, int num
     beginInsertColumns(QModelIndex(), 0, size - 1);
         m_nColumns = size;
     endInsertColumns();
-    m_pDataClass->loadData(*this, size, size, colorPlayer1, colorPlayer2, numberOfColors);
+    m_pDataClass->loadData(size, size, colorPlayer1, colorPlayer2, numberOfColors);
     emit dataReady();
 
-
-    m = new Music;
     takeAll(index(0, 0), true);
     if (pretendent.count() > 0)
         changeFieldOwner();
@@ -296,7 +293,9 @@ void GameBoard::test(int size, QColor colorPlayer1, QColor colorPlayer2, int num
     color = m_playersColors.at(WhoseMove::FIRST_PLAYER);
     isFirstEntering = false;
 
-    emit dataChanged(index(0, 0), index(size - 1, size - 1));
+    tp.stop();
+    qDebug() << "Finished creating arrays in " << tp.ms() << "ms";
+//    emit dataChanged(index(0, 0), index(size - 1, size - 1));
 }
 
 bool GameBoard::dataReadyForWork() const
@@ -308,7 +307,7 @@ void GameBoard::changeFieldOwner()
 {
     for (const QModelIndex& item : pretendent)
     {
-        vectorToReverse.push_back({{item.row(), item.column()}, m_pDataClass->m_hash[item]});
+        vectorToReverse.push_back({{item.row(), item.column()}, m_pDataClass->m_data[item.row()][item.column()]});
         setData(item, m_state, Qt::EditRole);
     }
     qDebug() << "vectorToReverse.size()" << vectorToReverse.size();

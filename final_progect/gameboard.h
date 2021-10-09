@@ -3,16 +3,10 @@
 
 #include <QAbstractTableModel>
 #include <vector>
-//#include <QColor>
-//#include <map>
-#include <QDebug>
 
 #include "data.h"
 #include "moverecorder.h"
-
-
-
-#include "music.h"
+#include "timer.h"
 
 class GameBoard : public QAbstractTableModel
 {
@@ -55,9 +49,6 @@ public:
     int state() const;
 
 private:
-    Music *m;
-
-
     Data *m_pDataClass;
     MoveRecorder *m_pRecorder;
 
@@ -66,7 +57,6 @@ private:
 
     int m_nRows;
     int m_nColumns;
-
 
     enum WhoseMove
     {

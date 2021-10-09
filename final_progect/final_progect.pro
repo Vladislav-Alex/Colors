@@ -32,4 +32,5 @@ HEADERS += \
     field.h \
     gameboard.h \
     moverecorder.h \
-    music.h
+    music.h \
+    timer.h

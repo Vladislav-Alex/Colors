@@ -1,11 +1,12 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
-        <file>Tile.qml</file>
-        <file>GameBoard.qml</file>
-        <file>StartFrame.qml</file>
-        <file>Result.qml</file>
-        <file>Cell.qml</file>
-        <file>GameSettings.qml</file>
+        <file>qml/Cell.qml</file>
+        <file>qml/GameBoard.qml</file>
+        <file>qml/GameSettings.qml</file>
+        <file>qml/main.qml</file>
+        <file>qml/Result.qml</file>
+        <file>qml/StartFrame.qml</file>
+        <file>qml/Tile.qml</file>
+        <file>qml/PanelForDisplayingWhoseMove.qml</file>
     </qresource>
 </RCC>

@@ -1,20 +1,14 @@
 #include "data.h"
 
-Data::Data(QAbstractTableModel& model, int nRows, int nColumns,
-           QColor firstPlayer, QColor secondPlayer, QObject* pobj)
+void Data::generateColorsForTheGame(const QColor &firstPlayerColor, const QColor &secondPlayerColor, size_t colorsNumber)
 {
-}
-
-void Data::loadData(QAbstractTableModel &model, int nRows, int nColumns, QColor firstPlayer, QColor secondPlayer, size_t colorsNumber)
-{
-    colorsForGame.push_back(firstPlayer);
-    colorsForGame.push_back(secondPlayer);
+    colorsForGame.push_back(firstPlayerColor);
+    colorsForGame.push_back(secondPlayerColor);
     size_t counter = 0;
     while (colorsForGame.size() != colorsNumber)
     {
         if (counter != constValues.size() - 1)
         {
-//            qDebug() << "here";
             QColor temp = constValues.at(counter++);
             for (const QColor &item : colorsForGame)
             {
@@ -26,43 +20,51 @@ void Data::loadData(QAbstractTableModel &model, int nRows, int nColumns, QColor 
         else
             counter = 0;
     }
+}
 
+void Data::loadData(int rows, int columns, QColor firstPlayerColor,
+                    QColor secondPlayerColor, size_t colorsNumber)
+{
+    generateColorsForTheGame(firstPlayerColor, secondPlayerColor, colorsNumber);
     srand(time(NULL));
-    for (int i = 0; i < nRows; ++i)
-        for (int j = 0; j < nColumns; ++j)
+
+    m_data.resize(rows);
+    for (int row = 0; row < rows; ++row)
+    {
+        for (int column = 0; column < columns; ++column)
         {
-            QModelIndex tempIndex = model.index(i, j);
+            m_data[column].reserve(columns);
 
             auto val = rand() % colorsForGame.size();
             QColor tempColor = colorsForGame.at(val);
-            m_hash[tempIndex] = { tempColor, Owner::IS_FREE };
-            switch (tempIndex.row()) {
+            m_data[row].push_back({tempColor, Owner::IS_FREE });
+            switch (row) {
             case 0:
-                switch (tempIndex.column()) {
+                switch (column) {
                 case 0:
                 case 1:
-                    m_hash[tempIndex] = { firstPlayer, Owner::FIRST_PLAYER };
+                    m_data[row][column] = { firstPlayerColor, Owner::FIRST_PLAYER };
                     break;
                 }
                 break;
             case 1:
-                switch (tempIndex.column()) {
+                switch (column) {
                 case 0:
-                    m_hash[tempIndex] = { firstPlayer, Owner::FIRST_PLAYER };
+                    m_data[row][column] = { firstPlayerColor, Owner::FIRST_PLAYER };
                     break;
                 }
                 break;
             }
-            if (tempIndex.row() == nRows - 1 || tempIndex.row() == nRows - 2)
+            if (row == rows - 1 || row == rows - 2)
             {
-                if (tempIndex.column() == nColumns - 1 || tempIndex.column() == nColumns - 2)
-                    m_hash[tempIndex] = { secondPlayer, Owner::SECOND_PLAYER };
+                if (column == columns - 1 || column == columns - 2)
+                    m_data[row][column] = { secondPlayerColor, Owner::SECOND_PLAYER };
             }
-            emit model.dataChanged(tempIndex, tempIndex);
         }
+    }
 }
 
-const QHash<QModelIndex, Field> &Data::hash() const
+const std::vector<std::vector<Field> > &Data::data() const noexcept
 {
-    return m_hash;
+    return m_data;
 }

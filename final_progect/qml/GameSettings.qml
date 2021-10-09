@@ -62,8 +62,8 @@ Popup {
                     anchors.left: parent.right
                     anchors.leftMargin: 50
                     from: 5
-                    to: 20
-                    value: 13
+                    to: 50
+                    value: 25
                 }
             }
 
