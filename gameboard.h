@@ -85,9 +85,9 @@ private:
     int m_nRows;
     int m_nColumns;
 
-    /**  */
+    /** This field indicate whose turn it is now */
     WhoseMove m_state;
-    /**  */
+    /** Current player color */
     QColor color;
 
     bool helper(int x, int y);
