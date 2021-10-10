@@ -28,6 +28,7 @@ public:
      * @return m_data
      */
     const std::vector<std::vector<Field> > &data() const noexcept;
+    ~Data();
 
     /** Data store */
     std::vector<std::vector<Field>> m_data;

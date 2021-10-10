@@ -64,6 +64,7 @@ public:
      */
     Q_INVOKABLE void boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2, int numberOfColors);
     Q_INVOKABLE void stepDown();
+    Q_INVOKABLE void restart();
 private:
     enum WhoseMove
     {
@@ -72,9 +73,9 @@ private:
     };
 
     /** Pointer to data */
-    Data *m_pDataClass;
+    Data *m_pDataClass = nullptr;
     /** Point to the class that records the moves */
-    MoveRecorder *m_pRecorder;
+    MoveRecorder *m_pRecorder = nullptr;
 
     /** Player colors */
     std::vector<QColor> m_playersColors;

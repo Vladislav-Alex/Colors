@@ -9,14 +9,23 @@ GameBoard::GameBoard(QObject* pobj)
     : QAbstractTableModel(pobj), m_state(FIRST_PLAYER),
       m_firstPlayerAccount(0), m_secondPlayerAccount(0)
 {
-    m_playersAccount = { m_firstPlayerAccount, m_secondPlayerAccount };
     m_pRecorder = new MoveRecorder();
+}
+
+void GameBoard::restart()
+{
+//    delete m_pRecorder;
+    m_firstPlayerAccount = 0;
+    m_secondPlayerAccount = 0;
+    m_playersAccount.clear();
+    isFirstEntering = true;
+
+    delete m_pDataClass;
 }
 
 GameBoard::~GameBoard()
 {
-    delete m_pRecorder;
-    delete m_pDataClass;
+    restart();
 }
 
 QVariant GameBoard::data(const QModelIndex& index, int nRole) const
@@ -254,6 +263,9 @@ void GameBoard::addingAreasToPlayerTerritories(size_t row, size_t column, WhoseM
 
 void GameBoard::boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2, int numberOfColors)
 {
+    restart();
+    m_playersAccount = { m_firstPlayerAccount, m_secondPlayerAccount };
+
     m_pDataClass = new Data();
 
     beginInsertRows(QModelIndex(), 0, size - 1);

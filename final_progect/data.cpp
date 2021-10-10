@@ -68,3 +68,9 @@ const std::vector<std::vector<Field> > &Data::data() const noexcept
 {
     return m_data;
 }
+
+Data::~Data()
+{
+    colorsForGame.clear();
+    m_data.clear();
+}
