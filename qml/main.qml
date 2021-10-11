@@ -1,9 +1,9 @@
 import QtQuick 2.15
 import QtQuick.Window 2.15
-import QtQuick.Controls 2.2
+import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.1
 
-Window
+ApplicationWindow
 {
     id: root
     maximumWidth: 900
@@ -11,7 +11,50 @@ Window
     minimumHeight: 800
     minimumWidth: 900
     visible: true
-    title: qsTr("temp")
+    title: qsTr("Colors")
+
+    property int showBonusColor: 0
+
+    header: ToolBar
+    {
+        id: toolBar
+        visible: false
+
+        ToolButton
+        {
+            id: stepDown
+            anchors.right: restart.left
+            icon.source: "qrc:/menu/resources/StepBack.jpg"
+            anchors.verticalCenter: parent.verticalCenter
+            onClicked:
+            {
+                game.stepDown();
+            }
+        }
+
+        ToolButton
+        {
+            id: restart
+            anchors.right: parent.right
+            icon.source: "qrc:/menu/resources/Restart.jpg"
+            anchors.verticalCenter: parent.verticalCenter
+            onClicked:
+            {
+                game.visible = false;
+                popup.open();
+            }
+        }
+        ToolButton
+        {
+            anchors.right: stepDown.left
+            anchors.verticalCenter: parent.verticalCenter
+            onClicked:
+            {
+                showBonusColor = 1;
+            }
+        }
+    }
+
 
 //    flags: Qt.FramelessWindowHint
 //    CheckBox
@@ -68,6 +111,7 @@ Window
             game.sPlayerColor = currentPlayer;
             popup.currentPlayerNum = 0;
             popup.close();
+            toolBar.visible = true;
         }
     }
 }

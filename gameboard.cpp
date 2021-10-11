@@ -66,7 +66,6 @@ bool GameBoard::setData(const QModelIndex& index, const QVariant& value, int nRo
             m_pDataClass->m_data[index.row()][index.column()].owner = Owner::SECOND_PLAYER;
             break;
         }
-//        emit animation(temp, m_pDataClass->data()[index.row()][index.column()].color);
         emit dataChanged(index, index);
         return true;
     }
@@ -182,6 +181,8 @@ void GameBoard::takeAll(const QModelIndex &index, bool isFirstEntering)
 
 void GameBoard::endOfTheGame()
 {
+    timer t;
+    t.start();
     for (int row = 0; row < m_nRows; ++row)
     {
         for (int column = 0; column < m_nColumns; ++column)
@@ -206,8 +207,14 @@ void GameBoard::endOfTheGame()
                 }
             }
             else
+            {
+                t.stop();
+                qDebug() << "Finished data " << t.ms() << "ms";
                 continue;
+            }
         }
+        t.stop();
+        qDebug() << "Finished data " << t.ms() << "ms";
     }
     emit gameEndSignal();
 }
@@ -263,6 +270,9 @@ void GameBoard::addingAreasToPlayerTerritories(size_t row, size_t column, WhoseM
 
 void GameBoard::boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2, int numberOfColors)
 {
+    timer t;
+    t.start();
+
     restart();
     m_playersAccount = { m_firstPlayerAccount, m_secondPlayerAccount };
 
@@ -290,6 +300,8 @@ void GameBoard::boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2
     addingAreasToPlayerTerritories(size - 1, size - 1, WhoseMove::FIRST_PLAYER);
 
     isFirstEntering = false;
+    t.stop();
+    qDebug() << "Finished initializing arrays in " << t.ms() << "ms";
 }
 
 void GameBoard::changeFieldOwner()

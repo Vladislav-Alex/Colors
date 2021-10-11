@@ -1,5 +1,7 @@
 #include "data.h"
 
+#include "timer.h"
+#include <QDebug>
 void Data::generateColorsForTheGame(const QColor &firstPlayerColor, const QColor &secondPlayerColor, size_t colorsNumber)
 {
     colorsForGame.push_back(firstPlayerColor);
@@ -25,6 +27,9 @@ void Data::generateColorsForTheGame(const QColor &firstPlayerColor, const QColor
 void Data::loadData(int rows, int columns, QColor firstPlayerColor,
                     QColor secondPlayerColor, size_t colorsNumber)
 {
+    timer t;
+    t.start();
+
     generateColorsForTheGame(firstPlayerColor, secondPlayerColor, colorsNumber);
     srand(time(NULL));
 

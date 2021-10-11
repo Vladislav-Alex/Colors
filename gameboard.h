@@ -8,6 +8,8 @@
 #include "moverecorder.h"
 #include "timer.h"
 
+#include "music.h"
+
 class GameBoard : public QAbstractTableModel
 {
     Q_OBJECT
@@ -120,13 +122,11 @@ private:
      * @brief Checks if the one who walks has a possible move
      */
     void endOfTheGame();
-
 signals:
     void gameEndSignal();
     void accountChanged();
     void playerChanged();
     void dataReady();
-//    void animation(QColor color1, QColor color2);
 };
 
 #endif // GAMEBOARD_H

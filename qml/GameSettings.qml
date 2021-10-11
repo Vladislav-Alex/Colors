@@ -63,7 +63,7 @@ Popup {
                     anchors.leftMargin: 50
                     from: 5
                     to: 50
-                    value: 25
+                    value: 20
                 }
             }
 
@@ -95,19 +95,36 @@ Popup {
             columns: 4;
             spacing: 3
 
-            Cell { cellColor: "red"; onClicked: { checkState(cellColor); visible = false; } }
-            Cell { cellColor: "green"; onClicked: { checkState(cellColor); visible = false; } }
-            Cell { cellColor: "yellow"; onClicked: { checkState(cellColor); visible = false; } }
-            Cell { cellColor: "steelblue"; onClicked: { checkState(cellColor); visible = false; } }
-            Cell { cellColor: "black"; onClicked: { checkState(cellColor); visible = false; } }
-            Cell { cellColor: "white"; onClicked: { checkState(cellColor); visible = false; } }
-            Cell { cellColor: "blue"; onClicked: { checkState(cellColor); visible = false; } }
+            Cell { id: c1; cellColor: "red"; onClicked: { checkState(cellColor); visible = false; } }
+            Cell { id: c2; cellColor: "green"; onClicked: { checkState(cellColor); visible = false; } }
+            Cell { id: c3; cellColor: "yellow"; onClicked: { checkState(cellColor); visible = false; } }
+            Cell { id: c4; cellColor: "steelblue"; onClicked: { checkState(cellColor); visible = false; } }
+            Cell { id: c5; cellColor: "white"; onClicked: { checkState(cellColor); visible = false; } }
+            Cell { id: c6; cellColor: "blue"; onClicked: { checkState(cellColor); visible = false; } }
+
+            Cell { id: black; cellColor: "black"; visible: false;  onClicked: { checkState(cellColor); visible = false; } }
             }
     }
+
+    onOpened:
+    {
+        c1.visible = true;
+        c2.visible = true;
+        c3.visible = true;
+        c4.visible = true;
+        c5.visible = true;
+        c6.visible = true;
+        if (showBonusColor === 1)
+        {
+            black.visible = true;
+        }
+    }
+
     onClosed:
     {
         game.dialogClose();
 //        game.boardSize = boarderSize;
         startFrame.visible = false;
+        game.updateState();
     }
 }

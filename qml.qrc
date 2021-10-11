@@ -9,4 +9,9 @@
         <file>qml/Tile.qml</file>
         <file>qml/PanelForDisplayingWhoseMove.qml</file>
     </qresource>
+    <qresource prefix="/menu">
+        <file>resources/Restart.jpg</file>
+        <file>resources/StepBack.jpg</file>
+        <file>resources/test.jpg</file>
+    </qresource>
 </RCC>

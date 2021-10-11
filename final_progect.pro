@@ -1,5 +1,4 @@
 QT += quick widgets
-#QT += multimedia
 
 CONFIG += c++11
 
@@ -11,8 +10,7 @@ SOURCES += \
         data.cpp \
         gameboard.cpp \
         main.cpp \
-        moverecorder.cpp \
-        music.cpp
+        moverecorder.cpp
 
 RESOURCES += qml.qrc
 
@@ -32,5 +30,4 @@ HEADERS += \
     field.h \
     gameboard.h \
     moverecorder.h \
-    music.h \
     timer.h

@@ -5,7 +5,7 @@ import QtQuick.Layouts 1.1
 Item
 {
     id: _item
-    signal dialogClose();
+    signal dialogClose()
     signal gameIsOver()
 
     anchors.fill: parent
@@ -16,14 +16,12 @@ Item
     property int numberOfColors: 3
     property color winningScore: "white"
 
-//    property alias firstPlayerAccount: showPanel.firstPlayerAccount
-//    property alias secondPlayerAccount: showPanel.secondPlayerAccount
-
     TableView {
         id: view
 
         anchors.fill: parent
         anchors.topMargin: 30
+
         model: GameBoardModel
         {
             onGameEndSignal:
@@ -36,51 +34,44 @@ Item
             }
         }
 
-//        Component.onCompleted:
-//        {
-////            showPanel.firstPlayerAccount: view.model.firstPlayerAccount;
-////            showPanel.secondPlayerAccount = view.model.secondPlayerAccount;
-//        }
-
         property alias firstPlayerAccount: showPanel.firstPlayerAccount
         property alias secondPlayerAccount: showPanel.secondPlayerAccount
 
         firstPlayerAccount: view.model.firstPlayerAccount
         secondPlayerAccount: view.model.secondPlayerAccount
 
-
         delegate: Item
         {
-            id: _backgroundDelegate
+            id: backgroundDelegate
+
             implicitWidth: view.width / view.model.nRows
             implicitHeight: view.height / view.model.nColumns
 
             Tile
             {
-                id: _tile
-                anchors.fill: _backgroundDelegate
+                id: tile
+                anchors.fill: backgroundDelegate
                 newColor: display
 
                 Text {
                     id: name
-                    anchors.centerIn: _tile
+                    anchors.centerIn: tile
                     text: owner
                 }
+
                 MouseArea
                 {
                     anchors.fill: parent
 
                     onClicked:
                     {
-console.log(view.firstPlayerAccount);
                         view.model.commit(row, column);
                         updateState();
                     }
 
                     onWheel:
                     {
-                        view.model.stepDown();
-                        updateState();
+                        stepDown();
                     }
                 }
             }
@@ -113,6 +104,12 @@ console.log(view.firstPlayerAccount);
             showPanel.fieldForSecond.color = "black";
             showPanel.fieldForSecond.width = 1;
         }
+    }
+
+    function stepDown()
+    {
+        view.model.stepDown();
+        updateState();
     }
 
     onDialogClose:
