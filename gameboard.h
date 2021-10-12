@@ -8,8 +8,6 @@
 #include "moverecorder.h"
 #include "timer.h"
 
-#include "music.h"
-
 class GameBoard : public QAbstractTableModel
 {
     Q_OBJECT

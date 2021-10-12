@@ -15,17 +15,17 @@ Popup {
     focus: true
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
 
-    padding: 10
-
-    contentItem: Text {
-        text: "Content"
+    background:  Image {
+        source: "qrc:/menu/resources/startFrame1.jpg"
     }
+    padding: 0
 
     Rectangle {
         id: page
         anchors.fill: parent
-        color: "lightgray"
+        color: "steelblue"
 
+        opacity: 0.65
         property int currentPlayerNum: 0;
         property color currentPlayer: "white"
 

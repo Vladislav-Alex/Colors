@@ -2,6 +2,7 @@
 
 #include "timer.h"
 #include <QDebug>
+
 void Data::generateColorsForTheGame(const QColor &firstPlayerColor, const QColor &secondPlayerColor, size_t colorsNumber)
 {
     colorsForGame.push_back(firstPlayerColor);
@@ -24,6 +25,35 @@ void Data::generateColorsForTheGame(const QColor &firstPlayerColor, const QColor
     }
 }
 
+void Data::createCustomColors(QColor firstPlayerColor, QColor secondPlayerColor)
+{
+    int numberOfCells = 6;
+    int nesting = 1;
+    for (; numberOfCells > 0; ++nesting)
+    {
+        numberOfCells -= nesting;
+    }
+    qDebug() << "nesting == " << --nesting;
+    int nestingColumn = nesting;
+    for (int row = 0; row < nesting; ++row)
+    {
+        for (int column = 0; column < nestingColumn; ++column)
+        {
+            m_data[row][column] = { firstPlayerColor, Owner::FIRST_PLAYER };
+        }
+        --nestingColumn;
+    }
+    nestingColumn = nesting;
+    for (int row = 0; row < nesting; ++row)
+    {
+        for (int column = 0; column < nestingColumn; ++column)
+        {
+            m_data[m_data.size() - 1 - row][m_data[m_data.size() - 1 - row].size() - 1 - column] = { secondPlayerColor, Owner::SECOND_PLAYER };
+        }
+        --nestingColumn;
+    }
+}
+
 void Data::loadData(int rows, int columns, QColor firstPlayerColor,
                     QColor secondPlayerColor, size_t colorsNumber)
 {
@@ -43,30 +73,10 @@ void Data::loadData(int rows, int columns, QColor firstPlayerColor,
             auto val = rand() % colorsForGame.size();
             QColor tempColor = colorsForGame.at(val);
             m_data[row].push_back({tempColor, Owner::IS_FREE });
-            switch (row) {
-            case 0:
-                switch (column) {
-                case 0:
-                case 1:
-                    m_data[row][column] = { firstPlayerColor, Owner::FIRST_PLAYER };
-                    break;
-                }
-                break;
-            case 1:
-                switch (column) {
-                case 0:
-                    m_data[row][column] = { firstPlayerColor, Owner::FIRST_PLAYER };
-                    break;
-                }
-                break;
-            }
-            if (row == rows - 1 || row == rows - 2)
-            {
-                if (column == columns - 1 || column == columns - 2)
-                    m_data[row][column] = { secondPlayerColor, Owner::SECOND_PLAYER };
-            }
         }
     }
+
+    createCustomColors(firstPlayerColor,secondPlayerColor);
 }
 
 const std::vector<std::vector<Field> > &Data::data() const noexcept

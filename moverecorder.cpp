@@ -19,3 +19,8 @@ int MoveRecorder::size()
 {
     return m_moveRecorder.size();
 }
+
+//MoveRecorder::~MoveRecorder()
+//{
+//    m_moveRecorder.~stack();
+//}

@@ -1,25 +1,26 @@
 #include "gameboard.h"
 #include <algorithm>
 #include <random>
-#include <time.h>
-
-#include "music.h"
+//#include <time.h>
 
 GameBoard::GameBoard(QObject* pobj)
     : QAbstractTableModel(pobj), m_state(FIRST_PLAYER),
       m_firstPlayerAccount(0), m_secondPlayerAccount(0)
 {
-    m_pRecorder = new MoveRecorder();
+
 }
 
 void GameBoard::restart()
 {
-//    delete m_pRecorder;
     m_firstPlayerAccount = 0;
     m_secondPlayerAccount = 0;
     m_playersAccount.clear();
     isFirstEntering = true;
 
+    vectorToReverse.clear();
+    pretendent.clear();
+
+    delete m_pRecorder;
     delete m_pDataClass;
 }
 
@@ -47,10 +48,10 @@ QVariant GameBoard::data(const QModelIndex& index, int nRole) const
 
 bool GameBoard::setData(const QModelIndex& index, const QVariant& value, int nRole)
 {
+//                    qDebug() << "51";
     if (!dataReadyForWork())
         return false;
     if (nRole == Qt::EditRole) {
-//        QColor temp = m_pDataClass->data()[index.row()][index.column()].color;
         m_pDataClass->m_data[index.row()][index.column()].color = color;
         ++m_playersAccount.at(m_state);
 
@@ -72,8 +73,9 @@ bool GameBoard::setData(const QModelIndex& index, const QVariant& value, int nRo
     else if (nRole == MyRoles::COLOR_ROLE)
     {
         m_pDataClass->m_data[index.row()][index.column()] = { value.value<QColor>(), Owner::IS_FREE};
+//                qDebug() << "75";
         emit dataChanged(index, index);
-
+//                        qDebug() << "77";
         return true;
     }
     return false;
@@ -81,38 +83,45 @@ bool GameBoard::setData(const QModelIndex& index, const QVariant& value, int nRo
 
 void GameBoard::stepDown()
 {
-    if (m_pRecorder->size() == 0)
+    qDebug() << "m_pRecorder->.size()"<< m_pRecorder->size();
+    if (m_pRecorder->size() < 1)
         return;
     const std::vector<Recorder> &temp = m_pRecorder->pop();
-    //qDebug() << "m_pRecorder->.size()"<< m_pRecorder->size();
     if (temp.size() != 0)
     {
         switch (m_state) {
         case WhoseMove::FIRST_PLAYER:
             color = m_playersColors.at(1);
-                        qDebug() << "change from " << m_state;
             m_state = WhoseMove::SECOND_PLAYER;
-                        qDebug() << "change to " << m_state;
             emit playerChanged();
             break;
         case WhoseMove::SECOND_PLAYER:
             color = m_playersColors.at(0);
-                        qDebug() << "change from " << m_state;
             m_state = WhoseMove::FIRST_PLAYER;
-                        qDebug() << "change to " << m_state;
             emit playerChanged();
             break;
         }
-
+//        qDebug() << "103";
         for (auto item : temp)
         {
-            qDebug() << "temp.size()"<< temp.size();
             QModelIndex tempIndex = index(static_cast<int>(item.point.x), static_cast<int>(item.point.y));
+            if (!tempIndex.isValid())
+            {
+                qDebug()<<"not valid" << tempIndex.row() << "/"<< tempIndex.column();
+                return;
+            }
             setData(tempIndex, item.field.color, MyRoles::COLOR_ROLE);
             --m_playersAccount.at(m_state);
         }
-        m_firstPlayerAccount = m_playersAccount.at(0);
-        m_secondPlayerAccount = m_playersAccount.at(1);
+        if (!m_playersAccount.empty())
+        {
+            m_firstPlayerAccount = m_playersAccount.at(0);
+            m_secondPlayerAccount = m_playersAccount.at(1);
+        }
+        else
+        {
+            qDebug() << "bad";
+        }
         emit accountChanged();
     }
 }
@@ -181,8 +190,8 @@ void GameBoard::takeAll(const QModelIndex &index, bool isFirstEntering)
 
 void GameBoard::endOfTheGame()
 {
-    timer t;
-    t.start();
+//    timer t;
+//    t.start();
     for (int row = 0; row < m_nRows; ++row)
     {
         for (int column = 0; column < m_nColumns; ++column)
@@ -208,13 +217,13 @@ void GameBoard::endOfTheGame()
             }
             else
             {
-                t.stop();
-                qDebug() << "Finished data " << t.ms() << "ms";
+//                t.stop();
+//                qDebug() << "Finished data " << t.ms() << "ms";
                 continue;
             }
         }
-        t.stop();
-        qDebug() << "Finished data " << t.ms() << "ms";
+//        t.stop();
+//        qDebug() << "Finished data " << t.ms() << "ms";
     }
     emit gameEndSignal();
 }
@@ -270,9 +279,6 @@ void GameBoard::addingAreasToPlayerTerritories(size_t row, size_t column, WhoseM
 
 void GameBoard::boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2, int numberOfColors)
 {
-    timer t;
-    t.start();
-
     restart();
     m_playersAccount = { m_firstPlayerAccount, m_secondPlayerAccount };
 
@@ -300,8 +306,8 @@ void GameBoard::boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2
     addingAreasToPlayerTerritories(size - 1, size - 1, WhoseMove::FIRST_PLAYER);
 
     isFirstEntering = false;
-    t.stop();
-    qDebug() << "Finished initializing arrays in " << t.ms() << "ms";
+
+    m_pRecorder = new MoveRecorder();
 }
 
 void GameBoard::changeFieldOwner()

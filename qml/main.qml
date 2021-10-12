@@ -6,10 +6,13 @@ import QtQuick.Layouts 1.1
 ApplicationWindow
 {
     id: root
-    maximumWidth: 900
-    maximumHeight: 800
-    minimumHeight: 800
-    minimumWidth: 900
+//    visibility: Window.FullScreen
+    maximumWidth: 1000
+    minimumHeight: Screen.height
+    minimumWidth: 1000
+    x: Screen.width / 2 - width / 2
+//    x: ScreenInfo.width / 2 - root.width / 2
+//    y: 10
     visible: true
     title: qsTr("Colors")
 
@@ -29,6 +32,7 @@ ApplicationWindow
             onClicked:
             {
                 game.stepDown();
+                console.log(Screen.height);
             }
         }
 
@@ -55,8 +59,10 @@ ApplicationWindow
         }
     }
 
-
-//    flags: Qt.FramelessWindowHint
+    background: Image {
+        source: "qrc:/menu/resources/startFrame1.jpg"
+    }
+    flags: Qt.FramelessWindowHint
 //    CheckBox
 //    {
 //        id: framelessMode

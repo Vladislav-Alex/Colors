@@ -13,5 +13,7 @@
         <file>resources/Restart.jpg</file>
         <file>resources/StepBack.jpg</file>
         <file>resources/test.jpg</file>
+        <file>resources/startFrame1.jpg</file>
+        <file>resources/startFrame2.jpg</file>
     </qresource>
 </RCC>

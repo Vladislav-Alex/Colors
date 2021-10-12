@@ -29,6 +29,11 @@ Item
             implicitHeight: 20
             text: qsTr("Single_Play")
 
+//            icon.source: "qrc:/menu/resources/game.jpg"
+//            background: Image {
+//                id: name
+//                source: "qrc:/menu/resources/game.jpg"
+//            }
             onClicked:
             {
                 _item.buttonClicked()

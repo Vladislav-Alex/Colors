@@ -55,6 +55,7 @@ private:
     void generateColorsForTheGame(const QColor &firstPlayerColor,
                                   const QColor &secondPlayerColor,
                                   size_t colorsNumber);
+    void createCustomColors(QColor firstPlayerColor, QColor secondPlayerColor);
 };
 
 #endif // DATA_H
