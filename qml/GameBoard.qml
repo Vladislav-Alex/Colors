@@ -14,6 +14,7 @@ Item
     property color sPlayerColor: "blue"
     property int boardSize: 3
     property int numberOfColors: 3
+    property int numberOfStartingCells: 3
     property color winningScore: "white"
 
     TableView {
@@ -115,6 +116,6 @@ Item
     onDialogClose:
     {
         visible = true;
-        view.model.boardCreation(boardSize, fPlayerColor, sPlayerColor, numberOfColors);
+        view.model.boardCreation(boardSize, fPlayerColor, sPlayerColor, numberOfColors, numberOfStartingCells);
     }
 }

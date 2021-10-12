@@ -19,9 +19,11 @@ public:
      * @param secondPlayerColor The second player color
      * @param colorsNumber The number of colors chosen by the player
      * that will be present in the game
+     * @param numberOfStartingCells
      */
     void loadData(int rows, int columns, QColor firstPlayerColor,
-                  QColor secondPlayerColor, size_t colorsNumber);
+                  QColor secondPlayerColor, size_t colorsNumber,
+                  int numberOfStartingCells);
 
     /**
      * @brief getter
@@ -55,7 +57,7 @@ private:
     void generateColorsForTheGame(const QColor &firstPlayerColor,
                                   const QColor &secondPlayerColor,
                                   size_t colorsNumber);
-    void createCustomColors(QColor firstPlayerColor, QColor secondPlayerColor);
+    void createCustomColors(QColor firstPlayerColor, QColor secondPlayerColor, int numberOfCells);
 };
 
 #endif // DATA_H

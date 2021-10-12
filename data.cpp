@@ -3,7 +3,9 @@
 #include "timer.h"
 #include <QDebug>
 
-void Data::generateColorsForTheGame(const QColor &firstPlayerColor, const QColor &secondPlayerColor, size_t colorsNumber)
+void Data::generateColorsForTheGame(const QColor &firstPlayerColor,
+                                    const QColor &secondPlayerColor,
+                                    size_t colorsNumber)
 {
     colorsForGame.push_back(firstPlayerColor);
     colorsForGame.push_back(secondPlayerColor);
@@ -25,9 +27,9 @@ void Data::generateColorsForTheGame(const QColor &firstPlayerColor, const QColor
     }
 }
 
-void Data::createCustomColors(QColor firstPlayerColor, QColor secondPlayerColor)
+void Data::createCustomColors(QColor firstPlayerColor,
+                              QColor secondPlayerColor, int numberOfCells)
 {
-    int numberOfCells = 6;
     int nesting = 1;
     for (; numberOfCells > 0; ++nesting)
     {
@@ -55,7 +57,8 @@ void Data::createCustomColors(QColor firstPlayerColor, QColor secondPlayerColor)
 }
 
 void Data::loadData(int rows, int columns, QColor firstPlayerColor,
-                    QColor secondPlayerColor, size_t colorsNumber)
+                    QColor secondPlayerColor, size_t colorsNumber,
+                    int numberOfStartingCells)
 {
     timer t;
     t.start();
@@ -76,7 +79,7 @@ void Data::loadData(int rows, int columns, QColor firstPlayerColor,
         }
     }
 
-    createCustomColors(firstPlayerColor,secondPlayerColor);
+    createCustomColors(firstPlayerColor,secondPlayerColor, numberOfStartingCells);
 }
 
 const std::vector<std::vector<Field> > &Data::data() const noexcept

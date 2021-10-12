@@ -92,6 +92,7 @@ ApplicationWindow
         visible: false
         boardSize: popup.boarderSize
         numberOfColors: popup.numberOfColors
+        numberOfStartingCells: popup.numberOfStartingCells
         onGameIsOver:
         {
             result.visible = true;

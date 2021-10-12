@@ -62,7 +62,7 @@ public:
      * @brief boardCreation Sends data to create a board
      * @param size Board size
      */
-    Q_INVOKABLE void boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2, int numberOfColors);
+    Q_INVOKABLE void boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2, int numberOfColors, int numberOfStartingCells);
     Q_INVOKABLE void stepDown();
     Q_INVOKABLE void restart();
 private:

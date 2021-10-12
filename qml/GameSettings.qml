@@ -6,6 +6,7 @@ Popup {
     property int boarderSize: spin1.value
     property int numberOfColors: spin2.value
     property int currentPlayerNum: page.currentPlayerNum
+    property int numberOfStartingCells: spin3.value
 
     id: popup
     anchors.centerIn: parent
@@ -81,6 +82,23 @@ Popup {
                     from: 3
                     to: 10
                     value: 3
+                }
+            }
+            Text
+            {
+                anchors.verticalCenter: popup.verticalCenter
+                text: "Number of starting cells:"
+                font.pointSize: 10
+
+                SpinBox {
+                    id: spin3
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.right
+                    anchors.leftMargin: 10
+                    from: 3
+                    to: 12
+                    value: 3
+                    stepSize: 3
                 }
             }
         }

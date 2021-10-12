@@ -277,7 +277,7 @@ void GameBoard::addingAreasToPlayerTerritories(size_t row, size_t column, WhoseM
     color = m_playersColors.at(m_state);
 }
 
-void GameBoard::boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2, int numberOfColors)
+void GameBoard::boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2, int numberOfColors, int numberOfStartingCells)
 {
     restart();
     m_playersAccount = { m_firstPlayerAccount, m_secondPlayerAccount };
@@ -291,7 +291,7 @@ void GameBoard::boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2
         m_nColumns = size;
     endInsertColumns();
 
-    m_pDataClass->loadData(size, size, colorPlayer1, colorPlayer2, numberOfColors);
+    m_pDataClass->loadData(size, size, colorPlayer1, colorPlayer2, numberOfColors, numberOfStartingCells);
 
     m_playersColors.clear();
 
