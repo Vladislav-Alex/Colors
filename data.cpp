@@ -31,10 +31,8 @@ void Data::createCustomColors(QColor firstPlayerColor,
                               QColor secondPlayerColor, int numberOfCells)
 {
     int nesting = 1;
-    for (; numberOfCells > 0; ++nesting)
-    {
-        numberOfCells -= nesting;
-    }
+    for (; numberOfCells > 0; numberOfCells -= nesting, ++nesting);
+
     qDebug() << "nesting == " << --nesting;
     int nestingColumn = nesting;
     for (int row = 0; row < nesting; ++row)
@@ -42,15 +40,9 @@ void Data::createCustomColors(QColor firstPlayerColor,
         for (int column = 0; column < nestingColumn; ++column)
         {
             m_data[row][column] = { firstPlayerColor, Owner::FIRST_PLAYER };
-        }
-        --nestingColumn;
-    }
-    nestingColumn = nesting;
-    for (int row = 0; row < nesting; ++row)
-    {
-        for (int column = 0; column < nestingColumn; ++column)
-        {
-            m_data[m_data.size() - 1 - row][m_data[m_data.size() - 1 - row].size() - 1 - column] = { secondPlayerColor, Owner::SECOND_PLAYER };
+            m_data[m_data.size() - 1 - row]
+                    [m_data[m_data.size() - 1 - row].size() - 1 - column]
+                    = { secondPlayerColor, Owner::SECOND_PLAYER };
         }
         --nestingColumn;
     }

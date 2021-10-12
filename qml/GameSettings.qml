@@ -96,7 +96,7 @@ Popup {
                     anchors.left: parent.right
                     anchors.leftMargin: 10
                     from: 3
-                    to: 12
+                    to: 10
                     value: 3
                     stepSize: 3
                 }
