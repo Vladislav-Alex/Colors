@@ -51,54 +51,84 @@ Popup {
         ColumnLayout
         {
             anchors.verticalCenter: parent.verticalCenter
-            Text
-            {
-                anchors.verticalCenter: popup.verticalCenter
-                text: "Board size:"
-                font.pointSize: 10
+//            anchors.fill: parent
+            anchors.left: parent.left
+            anchors.right: parent.right
+            spacing: 10
 
-                SpinBox {
-                    id: spin1
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.right
-                    anchors.leftMargin: 50
-                    from: 5
-                    to: 50
-                    value: 20
+            RowLayout
+            {
+                Layout.leftMargin: 25
+                Text
+                {
+                    anchors.verticalCenter: popup.verticalCenter
+                    text: "Board size:"
+                    font.pointSize: 10
+                }
+                Item
+                {
+                    Layout.fillWidth: true
+                    SpinBox
+                    {
+                        id: spin1
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        anchors.rightMargin: 225
+                        from: 5
+                        to: 50
+                        value: 20
+                    }
                 }
             }
 
-            Text
+            RowLayout
             {
-                anchors.verticalCenter: popup.verticalCenter
-                text: "Number Of Colors:"
-                font.pointSize: 10
-
-                SpinBox {
-                    id: spin2
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.right
-                    anchors.leftMargin: 10
-                    from: 3
-                    to: 10
-                    value: 3
+                Layout.leftMargin: 25
+                Text
+                {
+                    anchors.verticalCenter: popup.verticalCenter
+                    text: "Number Of Colors:"
+                    font.pointSize: 10
+                }
+                Item
+                {
+                    Layout.fillWidth: true
+                    SpinBox
+                    {
+                        id: spin2
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        anchors.rightMargin: 225
+                        from: 3
+                        to: 10
+                        value: 3
+                    }
                 }
             }
-            Text
-            {
-                anchors.verticalCenter: popup.verticalCenter
-                text: "Number of starting cells:"
-                font.pointSize: 10
 
-                SpinBox {
-                    id: spin3
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.right
-                    anchors.leftMargin: 10
-                    from: 3
-                    to: 10
-                    value: 3
-                    stepSize: 3
+            RowLayout
+            {
+                Layout.leftMargin: 25
+                Text
+                {
+                    anchors.verticalCenter: popup.verticalCenter
+                    text: "Number of starting cells:"
+                    font.pointSize: 10
+                }
+                Item
+                {
+                    Layout.fillWidth: true
+                    SpinBox
+                    {
+                        id: spin3
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        anchors.rightMargin: 225
+                        from: 3
+                        to: 10
+                        value: 3
+                        stepSize: 3
+                    }
                 }
             }
         }

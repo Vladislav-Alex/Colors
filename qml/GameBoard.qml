@@ -12,7 +12,7 @@ Item
 
     property color fPlayerColor: "darkred"
     property color sPlayerColor: "blue"
-    property int boardSize: 3
+    property int boardSize: 15
     property int numberOfColors: 3
     property int numberOfStartingCells: 3
     property color winningScore: "white"
