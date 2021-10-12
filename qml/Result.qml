@@ -11,36 +11,42 @@ Dialog
     property color winnerColor: "white"
     width: 300
     height: 100
+    visible: true
     Text
     {
         anchors.centerIn: parent
         text: qsTr("Your color is the best");
         color: winnerColor
     }
-    Row
+    Item
     {
-        id: row
-        width: 230
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.rightMargin: 0
-        anchors.bottomMargin: 5
-        spacing: 30
-        Button
+        anchors.fill: parent
+        Row
         {
-            text: qsTr("Restart")
-            onClicked:
+            id: row
+            width: 230
+
+            anchors.bottom: parent.bottom
+            layoutDirection: Qt.RightToLeft
+            spacing: 40
+
+            Button
             {
-                game.visible = false;
-                popup.open();
-                dialog.close();
-                toolBar.visible = false;
+                text: qsTr("Exit")
+                onClicked: Qt.quit();
             }
-        }
-        Button
-        {
-            text: qsTr("Exit")
-            onClicked: Qt.quit();
+
+            Button
+            {
+                text: qsTr("Restart")
+                onClicked:
+                {
+                    game.visible = false;
+                    popup.open();
+                    dialog.close();
+                    toolBar.visible = false;
+                }
+            }
         }
     }
 }

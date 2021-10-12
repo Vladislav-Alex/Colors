@@ -6,22 +6,26 @@ import QtQuick.Layouts 1.1
 ApplicationWindow
 {
     id: root
-//    visibility: Window.FullScreen
     maximumWidth: 1000
     minimumHeight: Screen.height
     minimumWidth: 1000
     x: Screen.width / 2 - width / 2
-//    x: ScreenInfo.width / 2 - root.width / 2
-//    y: 10
     visible: true
     title: qsTr("Colors")
+    flags: Qt.FramelessWindowHint
 
-    property int showBonusColor: 0
+    property bool showBonusColor: false
 
     header: ToolBar
     {
         id: toolBar
         visible: false
+
+        ToolButton
+        {
+            icon.source: "qrc:/menu/resources/powerOff.png"
+            onClicked: root.close()
+        }
 
         ToolButton
         {
@@ -32,7 +36,6 @@ ApplicationWindow
             onClicked:
             {
                 game.stepDown();
-                console.log(Screen.height);
             }
         }
 
@@ -54,7 +57,7 @@ ApplicationWindow
             anchors.verticalCenter: parent.verticalCenter
             onClicked:
             {
-                showBonusColor = 1;
+                showBonusColor = true;
             }
         }
     }
@@ -62,14 +65,6 @@ ApplicationWindow
     background: Image {
         source: "qrc:/menu/resources/startFrame1.jpg"
     }
-    flags: Qt.FramelessWindowHint
-//    CheckBox
-//    {
-//        id: framelessMode
-
-//        anchors.left: root.l
-//        text: qsTr("Frameless Mode")
-//    }
 
     StartFrame
     {

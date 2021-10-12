@@ -1,5 +1,5 @@
 import QtQuick 2.12
-import Game 1.0
+import Game 5.0
 import QtQuick.Layouts 1.1
 
 Item

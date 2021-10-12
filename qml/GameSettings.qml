@@ -132,7 +132,7 @@ Popup {
         c4.visible = true;
         c5.visible = true;
         c6.visible = true;
-        if (showBonusColor === 1)
+        if (showBonusColor === true)
         {
             black.visible = true;
         }
