@@ -90,8 +90,6 @@ private:
     /** Current player color */
     QColor color;
 
-//    bool helper(int x, int y);
-
     /**
      * @brief Checks if the data is ready
      */

@@ -32,8 +32,8 @@ void Data::createCustomColors(QColor firstPlayerColor,
 {
     int nesting = 1;
     for (; numberOfCells > 0; numberOfCells -= nesting, ++nesting);
-
-    qDebug() << "nesting == " << --nesting;
+    --nesting;
+//    qDebug() << "nesting == " << nesting;
     int nestingColumn = nesting;
     for (int row = 0; row < nesting; ++row)
     {

@@ -139,23 +139,6 @@ Qt::ItemFlags GameBoard::flags(const QModelIndex& index) const
     return index.isValid() ? (flags | Qt::ItemIsEditable) : flags;
 }
 
-//bool GameBoard::helper(int x, int y) //
-//{
-//    for (int i = -1; i <= 1; i += 2)
-//    {
-//        QModelIndex tempIndex = index(x, y + i);
-//        if (tempIndex.isValid() && m_pDataClass->data()[tempIndex.row()][tempIndex.column()].owner
-//                                   == static_cast<Owner>(m_state))
-//            return true;
-
-//        tempIndex = index(x + i, y);
-//        if (tempIndex.isValid() && m_pDataClass->data()[tempIndex.row()][tempIndex.column()].owner
-//                                   == static_cast<Owner>(m_state))
-//            return true;
-//    }
-//    return false;
-//}
-
 QList<QModelIndex> GameBoard::checkingAnAdjacentCell(int x, int y, Owner fieldOwner)
 {
     QList<QModelIndex> temp;
@@ -244,7 +227,8 @@ void GameBoard::commit(int row, int column)
         return;
 
     pretendent.clear();
-    Recorder rec = {{tempIndex.row(), tempIndex.column()}, m_pDataClass->m_data[tempIndex.row()][tempIndex.column()]};
+    Recorder rec = { {tempIndex.row(), tempIndex.column()},
+                     m_pDataClass->m_data[tempIndex.row()][tempIndex.column()] };
 
     setData(tempIndex, m_state, Qt::EditRole);
     takeAll(tempIndex, true);
@@ -273,7 +257,7 @@ void GameBoard::commit(int row, int column)
     endOfTheGame();
 
     t.stop();
-    qDebug() << "Freewheel check " << t.ms() << "ms";
+//    qDebug() << "Freewheel check " << t.ms() << "ms";
 }
 
 void GameBoard::addingAreasToPlayerTerritories(size_t row, size_t column, WhoseMove move)
@@ -289,17 +273,18 @@ void GameBoard::addingAreasToPlayerTerritories(size_t row, size_t column, WhoseM
 
 void GameBoard::boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2, int numberOfColors, int numberOfStartingCells)
 {
+    beginResetModel();
     restart();
     m_playersAccount = { m_firstPlayerAccount, m_secondPlayerAccount };
-
-    m_pDataClass = new Data();
-
+    endResetModel();
     beginInsertRows(QModelIndex(), 0, size - 1);
         m_nRows = size;
     endInsertRows();
     beginInsertColumns(QModelIndex(), 0, size - 1);
         m_nColumns = size;
     endInsertColumns();
+
+    m_pDataClass = new Data();
 
     m_pDataClass->loadData(size, size, colorPlayer1, colorPlayer2, numberOfColors, numberOfStartingCells);
 
@@ -324,10 +309,16 @@ void GameBoard::changeFieldOwner()
 {
     for (const QModelIndex& item : pretendent)
     {
-        vectorToReverse.push_back({{item.row(), item.column()}, m_pDataClass->m_data[item.row()][item.column()]});
-        setData(item, m_state, Qt::EditRole);
+        if (item.isValid())
+        {
+            vectorToReverse.push_back({{item.row(), item.column()}, m_pDataClass->m_data[item.row()][item.column()]});
+            setData(item, m_state, Qt::EditRole);
+            pretendent.clear();
+        }
+        else
+            qDebug()<<"not valid changeFieldOwner" << item.row() << "/"<< item.column();
     }
-    qDebug() << "vectorToReverse.size()" << vectorToReverse.size();
+//    qDebug() << "vectorToReverse.size()" << vectorToReverse.size();
 }
 
 bool GameBoard::dataReadyForWork() const
@@ -356,7 +347,6 @@ int GameBoard::rowCount(const QModelIndex&) const
         return m_nRows;
     else
         return defaultPuzzleDimension;
-
 }
 
 int GameBoard::columnCount(const QModelIndex&) const

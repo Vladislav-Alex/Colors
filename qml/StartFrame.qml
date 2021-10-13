@@ -4,66 +4,98 @@ import QtQuick.Controls 2.5
 
 Item
 {
-    id: _item
+    id: item
     anchors.fill: parent
 
     signal buttonClicked()
 
-    ColumnLayout
+    MouseArea
     {
-        id: _column
-        height: 60
+        anchors.fill: parent
 
-        anchors.left: _item.left
-        anchors.right: _item.right
-        anchors.bottom: _item.verticalCenter
-        anchors.margins: 15
 
-        spacing: 20
-
-        ToolButton
+        RoundButton
         {
-            Layout.alignment: Qt.AlignCenter
-            Layout.fillWidth: true
+            anchors.centerIn: parent
+            width: 100
+            height: 100
+            radius: 250
 
-            implicitHeight: 20
-            text: qsTr("Single_Play")
+            Text
+            {
+                anchors.centerIn: parent
+                text: "Start"
+                font.pointSize: 14
+                font.bold: true
+                color: "green"
+            }
 
-//            icon.source: "qrc:/menu/resources/game.jpg"
-//            background: Image {
-//                id: name
-//                source: "qrc:/menu/resources/game.jpg"
+            palette.button: "red"
+
+            onClicked:
+            {
+                item.buttonClicked();
+            }
+        }
+
+        onClicked: root.close();
+    }
+
+//    ColumnLayout
+//    {
+//        id: _column
+//        height: 60
+
+//        anchors.left: item.left
+//        anchors.right: item.right
+//        anchors.bottom: item.verticalCenter
+//        anchors.margins: 15
+
+//        spacing: 20
+
+//        ToolButton
+//        {
+//            Layout.alignment: Qt.AlignCenter
+//            Layout.fillWidth: true
+
+//            implicitHeight: 20
+//            text: qsTr("Single_Play")
+
+////            icon.source: "qrc:/menu/resources/game.jpg"
+////            background: Image {
+////                id: name
+////                source: "qrc:/menu/resources/game.jpg"
+////            }
+//            onClicked:
+//            {
+//                item.buttonClicked()
 //            }
-            onClicked:
-            {
-                _item.buttonClicked()
-            }
-        }
+//        }
 
-        ToolButton
-        {
-            Layout.alignment: Qt.AlignCenter
-            Layout.fillWidth: true
+//        ToolButton
+//        {
+//            Layout.alignment: Qt.AlignCenter
+//            Layout.fillWidth: true
 
-            implicitHeight: 20
-            text: qsTr("Game")
-            onClicked:
-            {
-                _item.buttonClicked()
-            }
-        }
-    }
+//            implicitHeight: 20
+//            text: qsTr("Game")
+//            onClicked:
+//            {
+//                item.buttonClicked()
+//            }
+//        }
+//    }
 
-    ToolButton
-    {
-        height: 20
-        anchors.bottom: _item.bottom
-        anchors.left: _item.left
-        anchors.right: _item.right
-        anchors.margins: 15
+//    ToolButton
+//    {
+//        height: 20
+//        anchors.bottom: item.bottom
+//        anchors.left: item.left
+//        anchors.right: item.right
+//        anchors.margins: 15
 
-        text: qsTr("Exit")
-        onClicked: Qt.quit();
-    }
+//        text: qsTr("Exit")
+//        onClicked: Qt.quit();
+//    }
 }
 
