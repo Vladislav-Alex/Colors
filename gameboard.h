@@ -90,14 +90,21 @@ private:
     /** Current player color */
     QColor color;
 
-    bool helper(int x, int y);
+//    bool helper(int x, int y);
 
     /**
      * @brief Checks if the data is ready
      */
     bool dataReadyForWork() const;
 
-    QList<QModelIndex> forCheck(int x, int y);
+    /**
+     * @brief checkingAnAdjacentCell The method for check that one of four adjacent cells belongs to the player
+     * @param x
+     * @param y
+     * @param fieldOwner
+     * @return
+     */
+    QList<QModelIndex> checkingAnAdjacentCell(int x, int y, Owner fieldOwner = Owner::IS_FREE);
     void takeAll(const QModelIndex&, bool isFirstEntering);
     void changeFieldOwner();
 

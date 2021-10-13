@@ -139,36 +139,36 @@ Qt::ItemFlags GameBoard::flags(const QModelIndex& index) const
     return index.isValid() ? (flags | Qt::ItemIsEditable) : flags;
 }
 
-bool GameBoard::helper(int x, int y) // the method for check that one of four adjacent cells belongs to the player
-{
-    for (int i = -1; i <= 1; i += 2)
-    {
-        QModelIndex tempIndex = index(x, y + i);
-        if (tempIndex.isValid() && m_pDataClass->data()[tempIndex.row()][tempIndex.column()].owner
-                                   == static_cast<Owner>(m_state))
-            return true;
+//bool GameBoard::helper(int x, int y) //
+//{
+//    for (int i = -1; i <= 1; i += 2)
+//    {
+//        QModelIndex tempIndex = index(x, y + i);
+//        if (tempIndex.isValid() && m_pDataClass->data()[tempIndex.row()][tempIndex.column()].owner
+//                                   == static_cast<Owner>(m_state))
+//            return true;
 
-        tempIndex = index(x + i, y);
-        if (tempIndex.isValid() && m_pDataClass->data()[tempIndex.row()][tempIndex.column()].owner
-                                   == static_cast<Owner>(m_state))
-            return true;
-    }
-    return false;
-}
+//        tempIndex = index(x + i, y);
+//        if (tempIndex.isValid() && m_pDataClass->data()[tempIndex.row()][tempIndex.column()].owner
+//                                   == static_cast<Owner>(m_state))
+//            return true;
+//    }
+//    return false;
+//}
 
-QList<QModelIndex> GameBoard::forCheck(int x, int y)
+QList<QModelIndex> GameBoard::checkingAnAdjacentCell(int x, int y, Owner fieldOwner)
 {
     QList<QModelIndex> temp;
     for (int i = -1; i <= 1; i += 2)
     {
         QModelIndex tempIndex = index(x, y + i);
         if (tempIndex.isValid() && (m_pDataClass->data()[tempIndex.row()][tempIndex.column()].owner
-                                     == Owner::IS_FREE || isFirstEntering))
+                                     == fieldOwner || isFirstEntering))
             temp.append(tempIndex);
 
         tempIndex = index(x + i, y);
         if (tempIndex.isValid() && (m_pDataClass->data()[tempIndex.row()][tempIndex.column()].owner
-                                    == Owner::IS_FREE || isFirstEntering))
+                                    == fieldOwner || isFirstEntering))
             temp.append(tempIndex);
     }
     return temp;
@@ -182,7 +182,7 @@ void GameBoard::takeAll(const QModelIndex &index, bool isFirstEntering)
     {
         if (!isFirstEntering)
             pretendent.append(index);
-        QList<QModelIndex> test = forCheck(index.row(), index.column());
+        QList<QModelIndex> test = checkingAnAdjacentCell(index.row(), index.column());
         for (const QModelIndex& item : test) takeAll(item, false);
     }
 }
@@ -190,8 +190,8 @@ void GameBoard::takeAll(const QModelIndex &index, bool isFirstEntering)
 
 void GameBoard::endOfTheGame()
 {
-//    timer t;
-//    t.start();
+    timer t;
+    t.start();
     for (int row = 0; row < m_nRows; ++row)
     {
         for (int column = 0; column < m_nColumns; ++column)
@@ -200,31 +200,34 @@ void GameBoard::endOfTheGame()
             {
                 if ((row - 1) >= 0 && m_pDataClass->data()[row - 1][column].owner == static_cast<Owner>(m_state))
                 {
+                    t.stop();
                     return;
                 }
                 if ((row + 1) < m_nRows && m_pDataClass->data()[row + 1][column].owner == static_cast<Owner>(m_state))
                 {
+                    t.stop();
                     return;
                 }
                 if ((column - 1) >= 0 && m_pDataClass->data()[row][column - 1].owner == static_cast<Owner>(m_state))
                 {
+                    t.stop();
                     return;
                 }
                 if ((column + 1) < m_nColumns && m_pDataClass->data()[row][column + 1].owner == static_cast<Owner>(m_state))
                 {
+                    t.stop();
                     return;
                 }
             }
             else
             {
-//                t.stop();
-//                qDebug() << "Finished data " << t.ms() << "ms";
+                t.stop();
                 continue;
             }
         }
-//        t.stop();
-//        qDebug() << "Finished data " << t.ms() << "ms";
     }
+    t.stop();
+    qDebug() << "Free wheel check completed " << t.ms() << "ms";
     emit gameEndSignal();
 }
 
@@ -235,7 +238,9 @@ void GameBoard::commit(int row, int column)
         return;
     QModelIndex tempIndex = index(row, column);
 
-    if (!tempIndex.isValid() || m_pDataClass->data()[tempIndex.row()][tempIndex.column()].owner != Owner::IS_FREE || !helper(row, column))
+    if (!tempIndex.isValid()
+            || m_pDataClass->data()[tempIndex.row()][tempIndex.column()].owner
+            != Owner::IS_FREE || checkingAnAdjacentCell(row, column, static_cast<Owner>(m_state)).empty())
         return;
 
     pretendent.clear();
@@ -262,8 +267,13 @@ void GameBoard::commit(int row, int column)
         emit playerChanged();
         break;
     }
+    timer t;
+    t.start();
 
     endOfTheGame();
+
+    t.stop();
+    qDebug() << "Freewheel check " << t.ms() << "ms";
 }
 
 void GameBoard::addingAreasToPlayerTerritories(size_t row, size_t column, WhoseMove move)
