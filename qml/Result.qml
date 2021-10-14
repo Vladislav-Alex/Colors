@@ -8,14 +8,23 @@ Dialog
     id: dialog
     anchors.centerIn: parent
 
+    background:  Image {
+        source: "qrc:/menu/resources/final.jpg"
+        opacity: 0.7
+    }
+
     property color winnerColor: "white"
+    property string winnerText: ""
+
     width: 300
     height: 100
     visible: true
     Text
     {
         anchors.centerIn: parent
-        text: qsTr("Your color is the best");
+        text: qsTr(winnerText);
+        font.pointSize: 16
+        font.bold: true
         color: winnerColor
     }
     Item

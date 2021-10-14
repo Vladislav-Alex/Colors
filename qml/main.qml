@@ -48,6 +48,7 @@ ApplicationWindow
             onClicked:
             {
                 game.visible = false;
+//                game.view.update();
                 popup.open();
             }
         }
@@ -91,6 +92,15 @@ ApplicationWindow
         onGameIsOver:
         {
             result.visible = true;
+            if (winningScore == "darkgray")
+            {
+                result.winnerText = "No winners!"
+            }
+            else
+            {
+                result.winnerText = "Your color is the best!"
+            }
+
             result.winnerColor = winningScore;
         }
     }

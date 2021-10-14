@@ -82,5 +82,5 @@ const std::vector<std::vector<Field> > &Data::data() const noexcept
 Data::~Data()
 {
     colorsForGame.clear();
-    m_data.clear();
+//    m_data.clear();
 }

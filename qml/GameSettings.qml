@@ -74,7 +74,7 @@ Popup {
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.right: parent.right
                         anchors.rightMargin: 225
-                        from: 5
+                        from: 6
                         to: 50
                         value: 20
                     }
@@ -174,5 +174,6 @@ Popup {
 //        game.boardSize = boarderSize;
         startFrame.visible = false;
         game.updateState();
+        toolBar.visible = true;
     }
 }

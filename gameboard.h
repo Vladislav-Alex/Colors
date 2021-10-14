@@ -65,6 +65,8 @@ public:
     Q_INVOKABLE void boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2, int numberOfColors, int numberOfStartingCells);
     Q_INVOKABLE void stepDown();
     Q_INVOKABLE void restart();
+    void resetModel();
+
 private:
     enum WhoseMove
     {

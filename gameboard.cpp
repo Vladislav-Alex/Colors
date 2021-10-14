@@ -271,19 +271,32 @@ void GameBoard::addingAreasToPlayerTerritories(size_t row, size_t column, WhoseM
     color = m_playersColors.at(m_state);
 }
 
-void GameBoard::boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2, int numberOfColors, int numberOfStartingCells)
+void GameBoard::resetModel()
 {
     beginResetModel();
+    if(m_pDataClass != nullptr)
+    {
+        qDebug() << "enter";
+        m_pDataClass->m_data.clear();
+    }
+//    removeColumns(0, m_nColumns - 1);
+//    removeRows(0, m_nRows - 1);
+    endResetModel();
+}
+
+void GameBoard::boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2, int numberOfColors, int numberOfStartingCells)
+{
+    if (!isFirstEntering)
+        resetModel();
     restart();
     m_playersAccount = { m_firstPlayerAccount, m_secondPlayerAccount };
-    endResetModel();
+
     beginInsertRows(QModelIndex(), 0, size - 1);
         m_nRows = size;
     endInsertRows();
     beginInsertColumns(QModelIndex(), 0, size - 1);
         m_nColumns = size;
     endInsertColumns();
-
     m_pDataClass = new Data();
 
     m_pDataClass->loadData(size, size, colorPlayer1, colorPlayer2, numberOfColors, numberOfStartingCells);

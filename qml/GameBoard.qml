@@ -17,6 +17,8 @@ Item
     property int numberOfStartingCells: 3
     property color winningScore: "white"
 
+    property alias view: view
+
     TableView {
         id: view
 
@@ -29,8 +31,10 @@ Item
             {
                 if (view.firstPlayerAccount > view.secondPlayerAccount)
                     winningScore = _item.fPlayerColor;
-                else
+                else if (view.firstPlayerAccount < view.secondPlayerAccount)
                     winningScore = _item.sPlayerColor;
+                else
+                    winningScore = "darkgray";
                 _item.gameIsOver();
             }
         }
@@ -44,6 +48,8 @@ Item
         delegate: Item
         {
             id: backgroundDelegate
+
+            Component.onCompleted: view.update();
 
             implicitWidth: view.width / view.model.nRows
             implicitHeight: view.height / view.model.nColumns

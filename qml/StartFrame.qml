@@ -25,7 +25,7 @@ Item
             {
                 anchors.centerIn: parent
                 text: "Start"
-                font.pointSize: 14
+                font.pointSize: 16
                 font.bold: true
                 color: "green"
             }
@@ -40,62 +40,5 @@ Item
 
         onClicked: root.close();
     }
-
-//    ColumnLayout
-//    {
-//        id: _column
-//        height: 60
-
-//        anchors.left: item.left
-//        anchors.right: item.right
-//        anchors.bottom: item.verticalCenter
-//        anchors.margins: 15
-
-//        spacing: 20
-
-//        ToolButton
-//        {
-//            Layout.alignment: Qt.AlignCenter
-//            Layout.fillWidth: true
-
-//            implicitHeight: 20
-//            text: qsTr("Single_Play")
-
-////            icon.source: "qrc:/menu/resources/game.jpg"
-////            background: Image {
-////                id: name
-////                source: "qrc:/menu/resources/game.jpg"
-////            }
-//            onClicked:
-//            {
-//                item.buttonClicked()
-//            }
-//        }
-
-//        ToolButton
-//        {
-//            Layout.alignment: Qt.AlignCenter
-//            Layout.fillWidth: true
-
-//            implicitHeight: 20
-//            text: qsTr("Game")
-//            onClicked:
-//            {
-//                item.buttonClicked()
-//            }
-//        }
-//    }
-
-//    ToolButton
-//    {
-//        height: 20
-//        anchors.bottom: item.bottom
-//        anchors.left: item.left
-//        anchors.right: item.right
-//        anchors.margins: 15
-
-//        text: qsTr("Exit")
-//        onClicked: Qt.quit();
-//    }
 }
 
