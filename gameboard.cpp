@@ -112,10 +112,6 @@ void GameBoard::stepDown()
             m_firstPlayerAccount = m_playersAccount.at(0);
             m_secondPlayerAccount = m_playersAccount.at(1);
         }
-        else
-        {
-            qDebug() << "bad";
-        }
         emit accountChanged();
     }
 }
@@ -155,10 +151,13 @@ void GameBoard::takeAll(const QModelIndex &index, bool isFirstEntering)
 {
     int find = pretendent.indexOf(index);
 
-    if (find == -1 && m_pDataClass->data()[index.row()][index.column()].color == m_playersColors.at(m_state))
+//    if (find == -1 && m_pDataClass->data()[index.row()][index.column()].color == m_playersColors.at(m_state))
+    if (find == -1 && m_pDataClass->data()[index.row()][index.column()].color == blockColor)
     {
         if (!isFirstEntering)
+        {
             pretendent.append(index);
+        }
         QList<QModelIndex> test = checkingAnAdjacentCell(index.row(), index.column());
         for (const QModelIndex& item : test) takeAll(item, false);
     }
@@ -221,16 +220,17 @@ void GameBoard::commit(int row, int column)
         return;
 
     pretendent.clear();
-    Recorder rec = { {tempIndex.row(), tempIndex.column()},
-                     m_pDataClass->m_data[tempIndex.row()][tempIndex.column()] };
+//    Recorder rec = { {tempIndex.row(), tempIndex.column()},
+//                     m_pDataClass->m_data[tempIndex.row()][tempIndex.column()] };
 
-    setData(tempIndex, m_state, Qt::EditRole);
-    takeAll(tempIndex, true);
-    if (pretendent.count() > 0)
-    {
-        changeFieldOwner();
-    }
-    vectorToReverse.push_back(rec);
+    blockColor = m_pDataClass->data()[tempIndex.row()][tempIndex.column()].color;
+//    setData(tempIndex, m_state, Qt::EditRole);
+    takeAll(tempIndex, false);
+//    if (pretendent.count() > 1)
+//    {
+    changeFieldOwner();
+//    }
+//    vectorToReverse.push_back(rec);
     m_pRecorder->push(vectorToReverse);
 
     switch (m_state) {
@@ -300,8 +300,15 @@ void GameBoard::boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2
 
     emit dataReady();
 
-    addingAreasToPlayerTerritories(0, 0, WhoseMove::SECOND_PLAYER);
-    addingAreasToPlayerTerritories(size - 1, size - 1, WhoseMove::FIRST_PLAYER);
+    m_playersAccount.at(0) = numberOfStartingCells;
+    m_playersAccount.at(1) = numberOfStartingCells;
+
+    m_firstPlayerAccount = m_playersAccount.at(0);
+    m_secondPlayerAccount = m_playersAccount.at(1);
+    emit accountChanged();
+
+//    addingAreasToPlayerTerritories(0, 0, WhoseMove::SECOND_PLAYER);
+//    addingAreasToPlayerTerritories(size - 1, size - 1, WhoseMove::FIRST_PLAYER);
 
     isFirstEntering = false;
 

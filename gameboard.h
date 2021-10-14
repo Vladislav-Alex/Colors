@@ -94,6 +94,7 @@ private:
     WhoseMove m_state;
     /** Current player color */
     QColor color;
+    QColor blockColor;
 
     /**
      * @brief Checks if the data is ready
