@@ -245,12 +245,12 @@ void GameBoard::commit(int row, int column)
         emit playerChanged();
         break;
     }
-    timer t;
-    t.start();
+//    timer t;
+//    t.start();
 
     endOfTheGame();
 
-    t.stop();
+//    t.stop();
 //    qDebug() << "Freewheel check " << t.ms() << "ms";
 }
 

@@ -7,20 +7,32 @@ void Data::generateColorsForTheGame(const QColor &firstPlayerColor,
                                     const QColor &secondPlayerColor,
                                     size_t colorsNumber)
 {
-    colorsForGame.push_back(firstPlayerColor);
-    colorsForGame.push_back(secondPlayerColor);
+//    colorsForGame.push_back(firstPlayerColor);
+//    colorsForGame.push_back(secondPlayerColor);
     size_t counter = 0;
+    bool colorExist;
     while (colorsForGame.size() != colorsNumber)
     {
+        colorExist = false;
         if (counter != constValues.size() - 1)
         {
             QColor temp = constValues.at(counter++);
             for (const QColor &item : colorsForGame)
             {
-                if (item == temp)
-                    continue;
+                if (item == temp || temp == firstPlayerColor || temp == secondPlayerColor)
+                {
+                    colorExist = true;
+                    break;
+                }
             }
-            colorsForGame.push_back(temp);
+            if (colorExist)
+            {
+                continue;
+            }
+            else
+            {
+                colorsForGame.push_back(temp);
+            }
         }
         else
             counter = 0;

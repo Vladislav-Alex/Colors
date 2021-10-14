@@ -100,7 +100,7 @@ Popup {
                         anchors.right: parent.right
                         anchors.rightMargin: 225
                         from: 3
-                        to: 10
+                        to: 8
                         value: 3
                     }
                 }
