@@ -48,7 +48,6 @@ QVariant GameBoard::data(const QModelIndex& index, int nRole) const
 
 bool GameBoard::setData(const QModelIndex& index, const QVariant& value, int nRole)
 {
-//                    qDebug() << "51";
     if (!dataReadyForWork())
         return false;
     if (nRole == Qt::EditRole) {
@@ -73,9 +72,7 @@ bool GameBoard::setData(const QModelIndex& index, const QVariant& value, int nRo
     else if (nRole == MyRoles::COLOR_ROLE)
     {
         m_pDataClass->m_data[index.row()][index.column()] = { value.value<QColor>(), Owner::IS_FREE};
-//                qDebug() << "75";
         emit dataChanged(index, index);
-//                        qDebug() << "77";
         return true;
     }
     return false;
@@ -83,7 +80,6 @@ bool GameBoard::setData(const QModelIndex& index, const QVariant& value, int nRo
 
 void GameBoard::stepDown()
 {
-    qDebug() << "m_pRecorder->.size()"<< m_pRecorder->size();
     if (m_pRecorder->size() < 1)
         return;
     const std::vector<Recorder> &temp = m_pRecorder->pop();
@@ -101,13 +97,11 @@ void GameBoard::stepDown()
             emit playerChanged();
             break;
         }
-//        qDebug() << "103";
         for (auto item : temp)
         {
             QModelIndex tempIndex = index(static_cast<int>(item.point.x), static_cast<int>(item.point.y));
             if (!tempIndex.isValid())
             {
-                qDebug()<<"not valid" << tempIndex.row() << "/"<< tempIndex.column();
                 return;
             }
             setData(tempIndex, item.field.color, MyRoles::COLOR_ROLE);
@@ -271,23 +265,8 @@ void GameBoard::addingAreasToPlayerTerritories(size_t row, size_t column, WhoseM
     color = m_playersColors.at(m_state);
 }
 
-void GameBoard::resetModel()
-{
-    beginResetModel();
-    if(m_pDataClass != nullptr)
-    {
-        qDebug() << "enter";
-        m_pDataClass->m_data.clear();
-    }
-//    removeColumns(0, m_nColumns - 1);
-//    removeRows(0, m_nRows - 1);
-    endResetModel();
-}
-
 void GameBoard::boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2, int numberOfColors, int numberOfStartingCells)
 {
-    if (!isFirstEntering)
-        resetModel();
     restart();
     m_playersAccount = { m_firstPlayerAccount, m_secondPlayerAccount };
 
@@ -297,7 +276,18 @@ void GameBoard::boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2
     beginInsertColumns(QModelIndex(), 0, size - 1);
         m_nColumns = size;
     endInsertColumns();
-    m_pDataClass = new Data();
+
+    try
+    {
+        m_pDataClass = new Data();
+//        throw std::bad_alloc();
+    }
+    catch (...)
+    {
+        qDebug() << "ex";
+        emit closeApp();
+    }
+
 
     m_pDataClass->loadData(size, size, colorPlayer1, colorPlayer2, numberOfColors, numberOfStartingCells);
 
@@ -315,7 +305,14 @@ void GameBoard::boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2
 
     isFirstEntering = false;
 
-    m_pRecorder = new MoveRecorder();
+    try
+    {
+        m_pRecorder = new MoveRecorder();
+    }
+    catch (...)
+    {
+        emit closeApp();
+    }
 }
 
 void GameBoard::changeFieldOwner()

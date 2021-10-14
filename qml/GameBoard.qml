@@ -37,6 +37,11 @@ Item
                     winningScore = "darkgray";
                 _item.gameIsOver();
             }
+
+            onCloseApp:
+            {
+//                root.close()
+            }
         }
 
         property alias firstPlayerAccount: showPanel.firstPlayerAccount
@@ -49,8 +54,6 @@ Item
         {
             id: backgroundDelegate
 
-            Component.onCompleted: view.update();
-
             implicitWidth: view.width / view.model.nRows
             implicitHeight: view.height / view.model.nColumns
 
@@ -60,11 +63,11 @@ Item
                 anchors.fill: backgroundDelegate
                 newColor: display
 
-                Text {
-                    id: name
-                    anchors.centerIn: tile
-                    text: owner
-                }
+//                Text {
+//                    id: name
+//                    anchors.centerIn: tile
+//                    text: owner
+//                }
 
                 MouseArea
                 {

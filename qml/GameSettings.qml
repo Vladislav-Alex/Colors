@@ -76,7 +76,7 @@ Popup {
                         anchors.rightMargin: 225
                         from: 6
                         to: 50
-                        value: 20
+                        value: 6
                     }
                 }
             }
@@ -125,7 +125,7 @@ Popup {
                         anchors.right: parent.right
                         anchors.rightMargin: 225
                         from: 3
-                        to: 10
+                        to: 6
                         value: 3
                         stepSize: 3
                     }

@@ -40,11 +40,15 @@ public:
     /**
      * @brief Returns the number of columns in the model
      */
-    int columnCount(const QModelIndex &parent = QModelIndex()) const override; ////////
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
     QHash<int,QByteArray> roleNames() const override;
     bool setData(const QModelIndex& index, const QVariant& value, int nRole) override;
+
+    /**
+     * @brief flags Allow the ability to edit elements
+     */
     Qt::ItemFlags flags(const QModelIndex &index) const override;
 
     /**
@@ -65,7 +69,6 @@ public:
     Q_INVOKABLE void boardCreation(int size, QColor colorPlayer1, QColor colorPlayer2, int numberOfColors, int numberOfStartingCells);
     Q_INVOKABLE void stepDown();
     Q_INVOKABLE void restart();
-    void resetModel();
 
 private:
     enum WhoseMove
@@ -99,10 +102,6 @@ private:
 
     /**
      * @brief checkingAnAdjacentCell The method for check that one of four adjacent cells belongs to the player
-     * @param x
-     * @param y
-     * @param fieldOwner
-     * @return
      */
     QList<QModelIndex> checkingAnAdjacentCell(int x, int y, Owner fieldOwner = Owner::IS_FREE);
     void takeAll(const QModelIndex&, bool isFirstEntering);
@@ -132,6 +131,7 @@ signals:
     void accountChanged();
     void playerChanged();
     void dataReady();
+    void closeApp();
 };
 
 #endif // GAMEBOARD_H

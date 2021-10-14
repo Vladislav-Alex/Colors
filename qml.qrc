@@ -8,6 +8,7 @@
         <file>qml/StartFrame.qml</file>
         <file>qml/Tile.qml</file>
         <file>qml/PanelForDisplayingWhoseMove.qml</file>
+        <file>qml/Exception.qml</file>
     </qresource>
     <qresource prefix="/menu">
         <file>resources/Restart.jpg</file>
